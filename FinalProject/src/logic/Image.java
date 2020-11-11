@@ -10,11 +10,9 @@ import javax.imageio.ImageIO;
 
 public class Image {
 	
-	public static boolean IS_UNI_THREAD = false;
-	
 	private static final float MAX_ZOOM = 0.9f;
 	
-	private static final float MIN_ZOOM = 3f;
+	private static final float MIN_ZOOM = 10f;
 
 	public static int[][] imageMatrix;
 	
@@ -30,10 +28,11 @@ public class Image {
 	
 	private static boolean isReady = false;
 	
-	public static void fillImage(){
+	public static void fillImage(File file){
+		isReady = false;
 		BufferedImage image;
 		try {
-			image = ImageIO.read(new File("city.jpg"));
+			image = ImageIO.read(file);
 			width = image.getWidth();
 			height = image.getHeight();
 			createMatrix(image);
@@ -44,11 +43,6 @@ public class Image {
 	}
 	
 	public static void paint (Graphics g) {
-		if (IS_UNI_THREAD)
-			for (int i = 0; i < width; i++)
-				for (int j = 0; j < height; j++)
-					filter.filter(imageMatrix,i,j);
-		
 		for (float i = 0, posX = 0; (int)i < width; i += zoom, posX++)
 			for (float j = 0, posY = 0; (int)j < height; j += zoom, posY++) {
 				g.setColor(new Color(imageMatrix[(int)i][(int)j]));
@@ -66,6 +60,21 @@ public class Image {
 				imageMatrix[i][j] = image.getRGB(i, j);
 				original[i][j] = imageMatrix[i][j];
 			}
+	}
+	
+	public static void export(String fileName) throws IOException {
+		if (fileName == null || fileName.isEmpty())
+			fileName = "result.jpg";
+		File file = new File(fileName + ".jpg");
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		setImage(image, imageMatrix);
+		ImageIO.write(image, "JPG", file);
+	}
+	
+	private static void setImage(BufferedImage image, int[][] matrix) {
+		for (int i = 0; i < matrix.length; i++)
+			for (int j = 0; j < matrix[i].length; j++)
+				image.setRGB(i, j, matrix[i][j]);
 	}
 	
 	public static void setPixelAt (int x, int y, int rgba) {

@@ -9,6 +9,10 @@ public class Modifier implements Runnable {
 
 	public static int NUM_THREADS = 1; // Number of threads to run in parallel
 
+	public static boolean IS_LOOP = false;
+
+	public static boolean NEED_TO_PERFORM = false;
+
 	private List<FilterThread> threads;
 
 	public static int delay = 1;
@@ -31,11 +35,13 @@ public class Modifier implements Runnable {
 				else
 					Thread.sleep(0, 1);
 
-				if (!Image.IS_UNI_THREAD) {
-					divideIntoThreads();
-					startThreads();
-					joinThreads();
-				}
+				if (Image.isReady())
+					if (IS_LOOP || NEED_TO_PERFORM) {
+						divideIntoThreads();
+						startThreads();
+						joinThreads();
+						NEED_TO_PERFORM = false;
+					}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -55,7 +61,7 @@ public class Modifier implements Runnable {
 	private void startThreads() {
 		threads.forEach(m -> m.start());
 	}
-	
+
 	private void divideIntoThreads() {
 		int blocks = Image.getWidth() / NUM_THREADS;
 		threads = new ArrayList<>();

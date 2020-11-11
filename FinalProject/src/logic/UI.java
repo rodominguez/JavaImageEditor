@@ -27,7 +27,7 @@ public class UI {
         Parameters p = new Parameters();
         p.addParametersToFrame(parameters);
         
-        parameters.setSize(500, 500);
+        parameters.setSize(500, 700);
         parameters.setLayout(null);
       
         
@@ -35,8 +35,6 @@ public class UI {
 	}
 	
 	public void start () throws InterruptedException {
-		Image.fillImage();
-		
 		canvas.start();
 		modifier.start();
 		
