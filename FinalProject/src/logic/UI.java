@@ -1,5 +1,7 @@
 package logic;
 
+import java.io.File;
+
 import javax.swing.JFrame;
 
 public class UI {
@@ -27,7 +29,7 @@ public class UI {
         Parameters p = new Parameters();
         p.addParametersToFrame(parameters);
         
-        parameters.setSize(500, 700);
+        parameters.setSize(750, 700);
         parameters.setLayout(null);
       
         
@@ -35,6 +37,7 @@ public class UI {
 	}
 	
 	public void start () throws InterruptedException {
+		//Image.fillImage(new File("city.jpg"));
 		canvas.start();
 		modifier.start();
 		

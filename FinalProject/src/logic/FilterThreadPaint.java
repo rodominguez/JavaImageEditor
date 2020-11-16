@@ -1,30 +1,30 @@
 package logic;
 
-import java.awt.Color;
-import java.awt.Graphics;
+public class FilterThreadPaint implements Runnable {
 
-public class FilterThreadPaint implements Runnable{
-	
 	private Thread thread;
-	
+
 	private int start, end;
-	
-	private Image image;
-	
-	private Graphics graphics;
-	
-	public FilterThreadPaint(int start, int end, Image image, Graphics graphics) {
+
+	private int width;
+
+	private int[] pixels;
+
+	private double zoom;
+
+	public FilterThreadPaint(int start, int end, int[] pixels, int width, double zoom) {
 		this.start = start;
 		this.end = end;
-		this.image = image;
-		this.graphics = graphics;
+		this.pixels = pixels;
+		this.zoom = zoom;
+		this.width = width;
 	}
-	
+
 	public void start() {
 		thread = new Thread(this);
 		thread.start();
 	}
-	
+
 	public void join() throws InterruptedException {
 		thread.join();
 	}
@@ -32,12 +32,10 @@ public class FilterThreadPaint implements Runnable{
 	@Override
 	public void run() {
 		try {
-		for (int i = start; i < end; i++) {
-			for (int j = 0; j < image.getHeight(); j++) {
-				graphics.setColor(new Color(image.getPixelAt(i, j)));
-				graphics.fillRect(i, j, 1, 1);
-			}
-		}
+			int i, j;
+			for (i = start; i < end; i++)
+				for (j = 0; j < width; j++)
+					pixels[i * width + j] = Image.imageMatrix[(int) (j * zoom)][(int) (i * zoom)];
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -1,18 +1,21 @@
 package logic;
 
-import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
 public class Image {
 	
-	private static final float MAX_ZOOM = 0.9f;
+	private static final double MAX_ZOOM = 1d;
 	
-	private static final float MIN_ZOOM = 10f;
+	private static final double MIN_ZOOM = 10d;
 
 	public static int[][] imageMatrix;
 	
@@ -22,9 +25,11 @@ public class Image {
 	
 	private static int offsetX, offsetY;
 	
-	private static float zoom = 1.0f;
+	private static double zoom = 1.0d;
 	
-	private static Filter filter = new Filter();
+	private static List<FilterThreadPaint> threads;
+	
+	public static int RENDER_THREADS = 1;
 	
 	private static boolean isReady = false;
 	
@@ -42,13 +47,51 @@ public class Image {
 		}
 	}
 	
-	public static void paint (Graphics g) {
-		for (float i = 0, posX = 0; (int)i < width; i += zoom, posX++)
-			for (float j = 0, posY = 0; (int)j < height; j += zoom, posY++) {
-				g.setColor(new Color(imageMatrix[(int)i][(int)j]));
-				g.fillRect((int)posX + offsetX, (int)posY + offsetY, 1, 1);
-			}
+	public static void paint (Graphics g, Component c) {
+		int width, height;
+		width = (int)Math.ceil(Image.width / zoom);
+		height = (int)Math.ceil(Image.height / zoom);
 		
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+		
+		/*
+		for (posY = 0; posY< height; posY++)
+			for (posX = 0; posX < width; posX++)
+				pixels[posY * width + posX] = imageMatrix[(int)(posX * zoom)][(int)(posY * zoom)];
+		*/
+		
+		divideIntoThreads(pixels, width, height);
+		startThreads();
+		joinThreads();
+				
+		g.drawImage(image, offsetX, offsetY, c);
+	}
+	
+	private static void joinThreads() {
+		threads.forEach(m -> {
+			try {
+				m.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	private static void startThreads() {
+		threads.forEach(m -> m.start());
+	}
+
+	private static void divideIntoThreads(int[] pixels, int width, int height) {
+		int blocks = height / RENDER_THREADS;
+		threads = new ArrayList<>();
+		for (int i = 0;; i += blocks) {
+			if (i + blocks >= height) {
+				threads.add(new FilterThreadPaint(i, height, pixels, width, zoom));
+				return;
+			} else
+				threads.add(new FilterThreadPaint(i, i + blocks, pixels, width, zoom));
+		}
 	}
 	
 	private static void createMatrix(BufferedImage image) {
@@ -94,7 +137,7 @@ public class Image {
 	}
 
 	public static void addZoom(int zoom) {
-		float newZoom = Image.zoom + (zoom / 100.0f) * 2;
+		double newZoom = Image.zoom + zoom * 0.02f;
 		if (newZoom <= MIN_ZOOM && newZoom >= MAX_ZOOM)
 			Image.zoom = newZoom;
 	}

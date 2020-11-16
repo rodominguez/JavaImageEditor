@@ -37,7 +37,7 @@ public class MainCanvas extends JPanel implements Runnable, MouseWheelListener, 
 	public void paint(Graphics g) {
 		g.fillRect(0, 0, 10000, 10000);
 		if (Image.isReady())
-			Image.paint(g);
+			Image.paint(g, this);
 	}
 
 	@Override

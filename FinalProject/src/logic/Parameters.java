@@ -24,6 +24,7 @@ public class Parameters {
 		setUploadFile(frame);
 		setDelay(frame);
 		setThreads(frame);
+		setRenderThreads(frame);
 		setExpressionAdditive(frame);
 		setColorModifierRed(frame);
 		setColorModifierGreen(frame);
@@ -33,7 +34,7 @@ public class Parameters {
 	}
 
 	private void setDelay(JFrame frame) {
-		SpinnerModel model = new SpinnerNumberModel(1, 0, 30, 1);
+		SpinnerModel model = new SpinnerNumberModel(1, 1, 30, 1);
 		JSpinner delay = new JSpinner(model);
 		delay.setBounds(10, 30, 95, 30);
 		delay.addChangeListener(e -> Modifier.delay = (int) delay.getValue());
@@ -47,14 +48,28 @@ public class Parameters {
 	}
 
 	private void setThreads(JFrame frame) {
-		SpinnerModel model = new SpinnerNumberModel(1, 1, 5, 1);
+		SpinnerModel model = new SpinnerNumberModel(1, 1, 4, 1);
 		JSpinner spinner = new JSpinner(model);
-		spinner.setBounds(10, 85, 100, 30);
+		spinner.setBounds(10, 85, 110, 30);
 		spinner.addChangeListener(e -> Modifier.NUM_THREADS = (int) spinner.getValue());
 
-		JLabel l = new JLabel("Modify threads: ");
+		JLabel l = new JLabel("Filter threads: ");
 		l.setLabelFor(spinner);
 		l.setBounds(10, 60, 85, 30);
+
+		frame.add(l);
+		frame.add(spinner);
+	}
+	
+	private void setRenderThreads(JFrame frame) {
+		SpinnerModel model = new SpinnerNumberModel(1, 1, 3, 1);
+		JSpinner spinner = new JSpinner(model);
+		spinner.setBounds(160, 85, 120, 30);
+		spinner.addChangeListener(e -> Image.RENDER_THREADS = (int) spinner.getValue());
+
+		JLabel l = new JLabel("Render threads: ");
+		l.setLabelFor(spinner);
+		l.setBounds(160, 60, 85, 30);
 
 		frame.add(l);
 		frame.add(spinner);
