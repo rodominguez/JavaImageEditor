@@ -6,12 +6,12 @@ import javax.swing.JFrame;
 
 public class UI {
 	
-	private MainCanvas canvas;
+	private Renderer canvas;
 	
-	private Modifier modifier;
+	private Filter modifier;
 	
 	public UI () {
-		canvas = new MainCanvas();
+		canvas = new Renderer();
 	}
 
 	public void init() throws InterruptedException {
@@ -21,7 +21,7 @@ public class UI {
         canvas.setSize(1000, 800);
         frame.add(canvas);
         frame.setVisible(true);
-        modifier = new Modifier();
+        modifier = new Filter();
         
         JFrame parameters = new JFrame("Parameters");
         parameters.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

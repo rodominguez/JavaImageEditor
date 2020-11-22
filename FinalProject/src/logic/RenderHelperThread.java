@@ -1,6 +1,6 @@
 package logic;
 
-public class FilterThreadPaint implements Runnable {
+public class RenderHelperThread implements Runnable {
 
 	private Thread thread;
 
@@ -12,7 +12,7 @@ public class FilterThreadPaint implements Runnable {
 
 	private double zoom;
 
-	public FilterThreadPaint(int start, int end, int[] pixels, int width, double zoom) {
+	public RenderHelperThread(int start, int end, int[] pixels, int width, double zoom) {
 		this.start = start;
 		this.end = end;
 		this.pixels = pixels;

@@ -34,42 +34,42 @@ public class Parameters {
 	}
 
 	private void setDelay(JFrame frame) {
-		SpinnerModel model = new SpinnerNumberModel(1, 1, 30, 1);
+		SpinnerModel model = new SpinnerNumberModel(1, 1, Filter.MAX_DELAY, 1);
 		JSpinner delay = new JSpinner(model);
-		delay.setBounds(10, 30, 95, 30);
-		delay.addChangeListener(e -> Modifier.delay = (int) delay.getValue());
+		delay.setBounds(10, 30, 110, 30);
+		delay.addChangeListener(e -> Filter.delay = (int) delay.getValue());
 
-		JLabel l = new JLabel("Modify delay: ");
+		JLabel l = new JLabel("Modify delay (ms): ");
 		l.setLabelFor(delay);
-		l.setBounds(10, 5, 85, 30);
+		l.setBounds(10, 5, 150, 30);
 
 		frame.add(l);
 		frame.add(delay);
 	}
 
 	private void setThreads(JFrame frame) {
-		SpinnerModel model = new SpinnerNumberModel(1, 1, 4, 1);
+		SpinnerModel model = new SpinnerNumberModel(1, 1, Filter.MAX_FILTER_THREADS, 1);
 		JSpinner spinner = new JSpinner(model);
 		spinner.setBounds(10, 85, 110, 30);
-		spinner.addChangeListener(e -> Modifier.NUM_THREADS = (int) spinner.getValue());
+		spinner.addChangeListener(e -> Filter.NUM_THREADS = (int) spinner.getValue());
 
 		JLabel l = new JLabel("Filter threads: ");
 		l.setLabelFor(spinner);
-		l.setBounds(10, 60, 85, 30);
+		l.setBounds(10, 60, 110, 30);
 
 		frame.add(l);
 		frame.add(spinner);
 	}
 	
 	private void setRenderThreads(JFrame frame) {
-		SpinnerModel model = new SpinnerNumberModel(1, 1, 3, 1);
+		SpinnerModel model = new SpinnerNumberModel(1, 1, Renderer.MAX_RENDER_THREADS, 1);
 		JSpinner spinner = new JSpinner(model);
 		spinner.setBounds(160, 85, 120, 30);
-		spinner.addChangeListener(e -> Image.RENDER_THREADS = (int) spinner.getValue());
+		spinner.addChangeListener(e -> Renderer.RENDER_THREADS = (int) spinner.getValue());
 
 		JLabel l = new JLabel("Render threads: ");
 		l.setLabelFor(spinner);
-		l.setBounds(160, 60, 85, 30);
+		l.setBounds(160, 60, 110, 30);
 
 		frame.add(l);
 		frame.add(spinner);
@@ -78,11 +78,11 @@ public class Parameters {
 	private void setExpressionAdditive (JFrame frame) {
 		JCheckBox expression = new JCheckBox("Expression");
 		expression.setBounds(10, 115, 110, 20);
-		expression.addActionListener(event -> Filter.IS_EXPRESSION = !Filter.IS_EXPRESSION);
+		expression.addActionListener(event -> InterpretFilter.IS_EXPRESSION = !InterpretFilter.IS_EXPRESSION);
 		
 		JCheckBox additive = new JCheckBox("Additive");
 		additive.setBounds(10, 135, 110, 20);
-		additive.addActionListener(event -> Filter.IS_ADDITIVE = !Filter.IS_ADDITIVE);
+		additive.addActionListener(event -> InterpretFilter.IS_ADDITIVE = !InterpretFilter.IS_ADDITIVE);
 		
 		frame.add(expression);
 		frame.add(additive);
@@ -123,7 +123,7 @@ public class Parameters {
 	}
 
 	private void setColorModifierBlue(JFrame frame) {
-		JLabel title = new JLabel("Green Modifier");
+		JLabel title = new JLabel("Blue Modifier");
 		title.setBounds(10, 350, 200, 30);
 
 		blue = new JTextField();
@@ -151,7 +151,7 @@ public class Parameters {
 			greenError.setVisible(false);
 			blueError.setVisible(false);
 			
-			Filter.reset();
+			InterpretFilter.reset();
 			Image.reset();
 		});
 
@@ -160,33 +160,33 @@ public class Parameters {
 		perform.addActionListener(event -> {
 			boolean isValid = true;
 			try {
-				Filter.setOperationRed(red.getText());
+				InterpretFilter.setOperationRed(red.getText());
 				redError.setVisible(false);
 			} catch (Exception e) {
 				redError.setVisible(true);
 				isValid = false;
 			}
 			try {
-				Filter.setOperationGreen(green.getText());
+				InterpretFilter.setOperationGreen(green.getText());
 				greenError.setVisible(false);
 			} catch (Exception e) {
 				greenError.setVisible(true);
 				isValid = false;
 			}
 			try {
-				Filter.setOperationBlue(blue.getText());
+				InterpretFilter.setOperationBlue(blue.getText());
 				blueError.setVisible(false);
 			} catch (Exception e) {
 				blueError.setVisible(true);
 				isValid = false;
 			}
 			if (isValid)
-				Modifier.NEED_TO_PERFORM = true;
+				Filter.NEED_TO_PERFORM = true;
 		});
 		
 		JCheckBox loop = new JCheckBox("Loop");
 		loop.setBounds(240, 450, 110, 30);
-		loop.addActionListener(event -> Modifier.IS_LOOP = !Modifier.IS_LOOP);
+		loop.addActionListener(event -> Filter.IS_LOOP = !Filter.IS_LOOP);
 
 		frame.add(loop);
 		frame.add(reset);
@@ -203,7 +203,7 @@ public class Parameters {
 				String mimetype= new MimetypesFileTypeMap().getContentType(f);
 		        String type = mimetype.split("/")[0];
 		        if(type.equals("image")) {
-		        	Filter.reset();
+		        	InterpretFilter.reset();
 		        	Image.fillImage(file.getSelectedFile());
 		        }
 			}
@@ -220,7 +220,7 @@ public class Parameters {
 		export.setBounds(220, 490, 100, 30);
 		export.addActionListener(event -> {
 			try {
-				Image.export(fileName.getText());
+				Exporter.export(fileName.getText());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

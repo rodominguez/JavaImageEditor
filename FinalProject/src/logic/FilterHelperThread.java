@@ -4,7 +4,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-public class FilterThread implements Runnable {
+public class FilterHelperThread implements Runnable {
 
 	private Thread thread;
 
@@ -16,7 +16,7 @@ public class FilterThread implements Runnable {
 
 	private int[] color;
 
-	public FilterThread(int start, int end) {
+	public FilterHelperThread(int start, int end) {
 		this.start = start;
 		this.end = end;
 		color = new int[3];
@@ -40,7 +40,7 @@ public class FilterThread implements Runnable {
 			for (int i = start; i < end; i++) {
 				for (int j = 0; j < Image.getHeight(); j++) {
 					assignColor(color, Image.imageMatrix[i][j]);
-					Filter.filter(Image.imageMatrix, i, j, color[0], color[1], color[2], engine);
+					InterpretFilter.filter(Image.imageMatrix, i, j, color[0], color[1], color[2], engine);
 				}
 			}
 		} catch (Exception e) {
