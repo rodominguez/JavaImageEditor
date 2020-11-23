@@ -60,6 +60,9 @@ public class Filter implements Runnable {
 		}
 	}
 
+	/**
+	 * Joins helper filter threads.
+	 */
 	private void joinThreads() {
 		threads.forEach(m -> {
 			try {
@@ -70,10 +73,17 @@ public class Filter implements Runnable {
 		});
 	}
 
+	/**
+	 * Starts helper filter threads.
+	 */
 	private void startThreads() {
 		threads.forEach(m -> m.start());
 	}
 
+	/**
+	 * Divides into blocks and assigns helper filter threads to each one.
+	 * #ofBlocks = filterThreads.
+	 */
 	private void divideIntoThreads() {
 		int blocks = Image.getWidth() / filterThreads;
 		threads = new ArrayList<>();
