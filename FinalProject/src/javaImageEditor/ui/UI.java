@@ -1,11 +1,8 @@
 package javaImageEditor.ui;
 
-import java.io.File;
-
 import javax.swing.JFrame;
 
 import javaImageEditor.filter.Filter;
-import javaImageEditor.render.Image;
 import javaImageEditor.render.Renderer;
 
 public class UI {
@@ -50,7 +47,7 @@ public class UI {
 	 * @throws InterruptedException
 	 */
 	private void start () throws InterruptedException {
-		Image.fillImage(new File("city.jpg")); //Use this line to load an image by default.
+		//Image.fillImage(new File("city.jpg")); //Use this line to load an image by default.
 		renderer.start();
 		filter.start();
 		
